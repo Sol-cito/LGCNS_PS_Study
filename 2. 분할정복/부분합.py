@@ -1,5 +1,7 @@
 '''
 애초에 복잡도가 O(n)이라 부분합 안 쓰는 게 실제로 더 빠름
+    print(rec(arr)[-1]) : 108ms
+    print(get_max_sum(arr)[-1]) : 68ms
 '''
 def rec(arr):
     if len(arr) == 1:
