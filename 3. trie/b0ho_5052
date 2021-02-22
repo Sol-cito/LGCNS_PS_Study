@@ -1,0 +1,98 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static int T;
+    static int N;
+    static String[] S;
+    static Trie root;
+    static String[] answer;
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        T = Integer.parseInt(br.readLine());
+        answer = new String[T];
+
+        while (T-- > 0) {
+            answer[T] = "YES";
+            root = new Trie();
+            N = Integer.parseInt(br.readLine());
+            S = new String[N];
+
+            for (int i = 0; i < N; i++) {
+                S[i] = br.readLine();
+            }
+
+            for (int i = 0; i < N; i++) {
+                insert(S[i]);
+            }
+
+            for (int i = 0; i < N; i++) {
+                //일관성이 없으면 더 볼 이유가 없다
+                if (answer[T].equals("YES")) {
+                    find(S[i]);
+                }
+            }
+
+            sb.append(answer[T] + "\n");
+        }
+
+        //이러한 출력 방식이 더 빠르다
+        System.out.println(sb.toString());
+    }
+
+    //입력은 동일하게 수행
+    public static void insert(String word) {
+        Trie Node = root;
+
+        for (int i = 0; i < word.length(); i++) {
+            char alpha = word.charAt(i);
+            //숫자 0 은 유니코드 48
+            int idx = alpha - 48;
+
+            if (Node.node[idx] == null) {
+                Node.node[idx] = new Trie();
+            }
+
+            Node = Node.node[idx];
+
+        }
+
+        Node.finish = true;
+    }
+
+    //입력하면서 바로 검사하는 방식은
+    //접두사에 해당하는 입력이 뒤에 나오는 경우 불가능,,
+    //때문에 모두 입력하고 검사 : 그렇게 하더라도 시간복작도는 영향없다 - O(n) 탐색
+    public static void find(String word) {
+        Trie Node = root;
+
+        for (int i = 0; i < word.length(); i++) {
+            char alpha = word.charAt(i);
+            int idx = alpha - 48;
+
+            //해당 노드에서 끝난적이 있으면
+            //더 볼것도 없이 중복되는 접두사 전화번호가 있다 == 일관성이 없다
+            if (Node.finish) {
+                answer[T] = "NO";
+                return;
+            }
+
+            //끝난적이 없으면 다음 노드를 확인
+            Node = Node.node[idx];
+        }
+    }
+
+    public static class Trie {
+        Trie[] node;
+        boolean finish;
+
+        public Trie() {
+            //숫자는 10개(0~9) 이므로 크기는 10
+            this.node = new Trie[10];
+            this.finish = false;
+        }
+    }
+
+}
