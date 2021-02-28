@@ -1,0 +1,65 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static int N;
+    static int[] arr;
+    static int[] list;
+    static int cnt;
+    static StringBuilder answer;
+
+    public static void main(String[] args) throws IOException {
+        answer = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        N = Integer.parseInt(br.readLine());
+        arr = new int[N];
+        list = new int[N];
+
+        //변태 케이스 색출
+        if (N == 1) {
+            System.out.println(0);
+            return;
+        }
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        //nlogn 의 이분탐색형 lis 기본형
+        list[0] = arr[0];
+        for (int i = 1, j = 0; i < N; i++) {
+            // 비교대상이 증가하는 형태라면 tmp 배열의 맨 뒤에 삽입하고
+            if (list[j] < arr[i]) {
+                j++;
+                list[j] = arr[i];
+            }
+            // 증가하는 값이 아니면 tmp 배열의 값을 해당 값으로 바꾼다
+            // 그때 위치를 찾기위해 lowerBound 를 찾는다
+            // 이렇게 값이 바뀌는 경우가 문제에서는 책을 교체하는 순간이 된다
+            else {
+                list[lowerBound(0, j, arr[i])] = arr[i];
+                cnt++;
+            }
+        }
+
+        answer.append(cnt);
+        System.out.print(answer);
+    }
+
+    //증가 형태가 아닌 값
+    //즉 어딘가 삽입되어야 할 때의 위치를 이분탐색으로 찾는다
+    public static int lowerBound(int start, int end, int target) {
+        while (start < end) {
+            int mid = (start + end) / 2;
+
+            if (list[mid] >= target) {
+                end = mid;
+            } else {
+                start = mid + 1;
+            }
+        }
+        return end;
+    }
+
+}
