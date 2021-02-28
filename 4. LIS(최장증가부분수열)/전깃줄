@@ -1,0 +1,60 @@
+'''
+8
+1 8
+3 9
+2 2
+4 1
+6 4
+10 10
+9 5
+7 6
+'''
+import sys
+
+def getidx(a, x):
+    lo = 0
+    hi = len(a)-1
+    while lo < hi:
+        mid = (lo+hi)//2
+        if x[1] <= a[mid][1]:
+            hi = mid
+        else:
+            lo = mid + 1
+    return hi
+
+lines = []
+for i in range(int(sys.stdin.readline())):
+    line = list(map(int, sys.stdin.readline().split()))
+    lines.append(line)
+
+lines = sorted(lines,key = lambda x : x[0])
+
+p = []
+d = []
+for i in lines:
+    idx = 0
+    if len(p) == 0:
+        p.append(i)
+        idx = 0
+    else:
+        if p[-1][1] < i[1]:
+            p.append(i)
+            idx = len(p)-1
+        else:
+            idx = getidx(p,i)
+ 
+            p[idx] = i
+    d.append(idx)
+
+
+idx = d[-1]
+ans = []
+for i in range(len(d)-1,-1,-1):
+    if d[i] == idx:
+        idx -= 1
+    else:
+        ans.append(lines[i][0])
+print(len(ans))
+ans.sort()
+for a in ans:
+    print(a)
